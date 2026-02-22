@@ -18,7 +18,7 @@ describe('Tools', () => {
     it('should be defined', async () => {
       const { processDocumentTool } = await import('../components/ai/tools');
       expect(processDocumentTool).toBeDefined();
-      expect(processDocumentTool.description).toContain('Process documents');
+      expect(processDocumentTool.description).toContain('Extract text');
     });
   });
 
@@ -26,23 +26,7 @@ describe('Tools', () => {
     it('should be defined', async () => {
       const { analyzeImageTool } = await import('../components/ai/tools');
       expect(analyzeImageTool).toBeDefined();
-      expect(analyzeImageTool.description).toContain('Analyze images');
-    });
-  });
-
-  describe('generateSection', () => {
-    it('should be defined', async () => {
-      const { generateSection } = await import('../components/ai/tools');
-      expect(generateSection).toBeDefined();
-      expect(generateSection.description).toContain('Generate configuration');
-    });
-  });
-
-  describe('assemblePortfolio', () => {
-    it('should be defined', async () => {
-      const { assemblePortfolio } = await import('../components/ai/tools');
-      expect(assemblePortfolio).toBeDefined();
-      expect(assemblePortfolio.description).toContain('Combine all sections');
+      expect(analyzeImageTool.description).toContain('Analyze an image');
     });
   });
 
@@ -51,8 +35,6 @@ describe('Tools', () => {
       const { allTools } = await import('../components/ai/tools');
       expect(allTools).toHaveProperty('processDocument');
       expect(allTools).toHaveProperty('analyzeImage');
-      expect(allTools).toHaveProperty('generateSection');
-      expect(allTools).toHaveProperty('assemblePortfolio');
     });
   });
 });

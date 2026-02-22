@@ -1,27 +1,26 @@
-export { portfolioAgent } from './agent';
-export type { PortfolioAgentUIMessage } from './agent';
-
-export { resumeParserAgent } from './agents/resume-parser';
-export { imageAnalyzerAgent } from './agents/image-analyzer';
-export { portfolioDesignerAgent } from './agents/portfolio-designer';
+export {
+  generatePortfolio,
+  extractHtml,
+  validateHtml,
+  type GenerationInput,
+  type GenerationResult,
+  type ResumeData,
+} from './agent';
 
 export {
   processDocumentTool,
   analyzeImageTool,
-  generateSection,
-  assemblePortfolio,
   allTools,
 } from './tools';
-
-export type { DocumentAnalysisResult, ImageAnalysisResult } from './tools';
 
 export {
   resumeDataSchema,
   imageAnalysisSchema,
+  designSpecSchema,
   portfolioConfigSchema,
   documentInputSchema,
   imageInputSchema,
-  type ResumeData,
+  type ResumeData as ResumeDataType,
   type ImageAnalysis,
   type ImageAnalysisItem,
   type PortfolioConfig,
@@ -31,6 +30,7 @@ export {
   type SEO,
   type DocumentInput,
   type ImageInput,
+  type DesignSpec as DesignSpecType,
 } from './prompts/schemas';
 
 export { hackclub, model, MODELS, HACKCLUB_BASE_URL } from './config';

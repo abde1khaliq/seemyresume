@@ -44,6 +44,7 @@ export const resumeDataSchema = z.object({
       endDate: z.string().optional(),
       current: z.boolean().optional(),
       achievements: z.array(z.string()),
+      location: z.string().optional(),
     })
   ).optional(),
   projects: z.array(
@@ -136,7 +137,7 @@ export const experienceItemSchema = z.object({
   current: z.boolean().optional(),
   achievements: z.array(z.string()),
   location: z.string().optional(),
-});
+}).passthrough();
 
 export const projectItemSchema = z.object({
   name: z.string(),
@@ -145,12 +146,50 @@ export const projectItemSchema = z.object({
   link: z.string().optional(),
   image: z.string().optional(),
   highlights: z.array(z.string()).optional(),
-});
+  highlight: z.boolean().optional(),
+}).passthrough();
 
 export const skillCategorySchema = z.object({
-  category: z.string(),
+  name: z.string(),
   skills: z.array(z.string()),
 });
+
+export const aboutSectionDataSchema = z.object({
+  summary: z.string().optional(),
+  location: z.string().optional(),
+  availability: z.string().optional(),
+}).passthrough();
+
+export const experienceSectionDataSchema = z.array(experienceItemSchema);
+
+export const projectsSectionDataSchema = z.array(projectItemSchema);
+
+export const skillsSectionDataSchema = z.object({
+  categories: z.array(skillCategorySchema).optional(),
+  flat: z.array(z.string()).optional(),
+}).passthrough();
+
+export const educationItemSchema = z.object({
+  institution: z.string(),
+  degree: z.string(),
+  field: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+}).passthrough();
+
+export const educationSectionDataSchema = z.array(educationItemSchema);
+
+export const contactSectionDataSchema = z.object({
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  location: z.string().optional(),
+  website: z.string().optional(),
+  cta: z.string().optional(),
+  social: z.array(z.object({
+    platform: z.string(),
+    url: z.string(),
+  })).optional(),
+}).passthrough();
 
 export const sectionSchema = z.object({
   type: sectionTypeSchema,
@@ -206,3 +245,40 @@ export type Section = z.infer<typeof sectionSchema>;
 export type HeroSection = z.infer<typeof heroSectionSchema>;
 export type ThemeConfig = z.infer<typeof themeConfigSchema>;
 export type SEO = z.infer<typeof seoSchema>;
+export type ExperienceItem = z.infer<typeof experienceItemSchema>;
+export type ProjectItem = z.infer<typeof projectItemSchema>;
+export type EducationItem = z.infer<typeof educationItemSchema>;
+export type AboutSectionData = z.infer<typeof aboutSectionDataSchema>;
+export type ExperienceSectionData = z.infer<typeof experienceSectionDataSchema>;
+export type ProjectsSectionData = z.infer<typeof projectsSectionDataSchema>;
+export type SkillsSectionData = z.infer<typeof skillsSectionDataSchema>;
+export type EducationSectionData = z.infer<typeof educationSectionDataSchema>;
+export type ContactSectionData = z.infer<typeof contactSectionDataSchema>;
+
+export const designSpecSchema = z.object({
+  theme: z.enum(['dark', 'light']),
+  layoutStyle: z.enum(['bento', 'timeline', 'cards', 'split', 'terminal']),
+  accentColor: z.string(),
+  fontFamily: z.object({
+    heading: z.string(),
+    body: z.string(),
+  }),
+  sections: z.array(z.object({
+    type: z.string(),
+    order: z.number(),
+    highlight: z.boolean().optional(),
+  })),
+  animations: z.enum(['minimal', 'moderate', 'elaborate']),
+  heroStyle: z.enum(['terminal', 'gradient', 'split', 'centered', 'minimal']),
+  visualEffects: z.array(z.enum([
+    'glassmorphism',
+    'gradients',
+    'shadows',
+    'borders',
+    'glow',
+    'patterns',
+  ])),
+  heroCTA: z.string().optional(),
+});
+
+export type DesignSpec = z.infer<typeof designSpecSchema>;
