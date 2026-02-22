@@ -7,6 +7,14 @@ import {
   sectionSchema,
   themeConfigSchema,
   seoSchema,
+  experienceItemSchema,
+  projectItemSchema,
+  aboutSectionDataSchema,
+  experienceSectionDataSchema,
+  projectsSectionDataSchema,
+  skillsSectionDataSchema,
+  educationSectionDataSchema,
+  contactSectionDataSchema,
 } from '../components/ai/prompts/schemas';
 
 describe('resumeDataSchema', () => {
@@ -293,5 +301,203 @@ describe('seoSchema', () => {
     });
 
     expect(result.success).toBe(true);
+  });
+});
+
+describe('experienceItemSchema', () => {
+  it('validates experience with all fields', () => {
+    const result = experienceItemSchema.safeParse({
+      company: 'Tech Corp',
+      role: 'Senior Engineer',
+      startDate: '2021',
+      endDate: '2023',
+      current: false,
+      achievements: ['Built feature A', 'Led team B'],
+      location: 'San Francisco',
+      technologies: ['React', 'Node.js'],
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.company).toBe('Tech Corp');
+    }
+  });
+
+  it('allows extra fields via passthrough', () => {
+    const result = experienceItemSchema.safeParse({
+      company: 'Tech Corp',
+      role: 'Engineer',
+      startDate: '2020',
+      achievements: [],
+      customField: 'any value',
+    });
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('projectItemSchema', () => {
+  it('validates project with all fields', () => {
+    const result = projectItemSchema.safeParse({
+      name: 'TaskFlow',
+      description: 'Project management app',
+      techStack: ['React', 'Node.js'],
+      link: 'https://taskflow.com',
+      image: 'https://example.com/taskflow.png',
+      highlights: ['Real-time sync', 'Drag and drop'],
+      highlight: true,
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('validates minimal project', () => {
+    const result = projectItemSchema.safeParse({
+      name: 'Simple App',
+      description: 'A simple app',
+      techStack: ['JavaScript'],
+    });
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('aboutSectionDataSchema', () => {
+  it('validates about section data', () => {
+    const result = aboutSectionDataSchema.safeParse({
+      summary: 'Passionate developer',
+      location: 'San Francisco',
+      availability: 'Open to opportunities',
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('allows empty object', () => {
+    const result = aboutSectionDataSchema.safeParse({});
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('experienceSectionDataSchema', () => {
+  it('validates array of experiences', () => {
+    const result = experienceSectionDataSchema.safeParse([
+      {
+        company: 'Company A',
+        role: 'Engineer',
+        startDate: '2020',
+        achievements: ['Built X'],
+      },
+      {
+        company: 'Company B',
+        role: 'Senior Engineer',
+        startDate: '2022',
+        achievements: ['Led Y'],
+      },
+    ]);
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('projectsSectionDataSchema', () => {
+  it('validates array of projects', () => {
+    const result = projectsSectionDataSchema.safeParse([
+      {
+        name: 'Project 1',
+        description: 'Description',
+        techStack: ['React'],
+      },
+    ]);
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('skillsSectionDataSchema', () => {
+  it('validates skills with categories', () => {
+    const result = skillsSectionDataSchema.safeParse({
+      categories: [
+        { name: 'Frontend', skills: ['React', 'Vue'] },
+        { name: 'Backend', skills: ['Node.js', 'Python'] },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('validates skills with flat array', () => {
+    const result = skillsSectionDataSchema.safeParse({
+      flat: ['JavaScript', 'TypeScript', 'React'],
+    });
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('educationSectionDataSchema', () => {
+  it('validates array of education items', () => {
+    const result = educationSectionDataSchema.safeParse([
+      {
+        institution: 'UC Berkeley',
+        degree: 'BS',
+        field: 'Computer Science',
+        endDate: '2019',
+      },
+    ]);
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('contactSectionDataSchema', () => {
+  it('validates contact data', () => {
+    const result = contactSectionDataSchema.safeParse({
+      email: 'john@example.com',
+      phone: '(555) 123-4567',
+      location: 'San Francisco, CA',
+      website: 'johndoe.dev',
+      cta: "Let's connect!",
+      social: [
+        { platform: 'GitHub', url: 'https://github.com/johndoe' },
+        { platform: 'LinkedIn', url: 'https://linkedin.com/in/johndoe' },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('sectionSchema', () => {
+  it('validates section with typed data', () => {
+    const result = sectionSchema.safeParse({
+      type: 'experience',
+      title: 'Work Experience',
+      visible: true,
+      order: 1,
+      data: [
+        {
+          company: 'Tech Corp',
+          role: 'Engineer',
+          startDate: '2020',
+          achievements: ['Built features'],
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('defaults visible to true', () => {
+    const result = sectionSchema.safeParse({
+      type: 'about',
+      title: 'About Me',
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.visible).toBe(true);
+    }
   });
 });

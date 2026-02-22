@@ -1,129 +1,102 @@
-import { portfolioAgent } from '@/components/ai/agent';
-import { resumeDataSchema, portfolioConfigSchema } from '@/components/ai/prompts/schemas';
+import { generatePortfolio, type GenerationInput } from '@/components/ai/agent';
+import type { ResumeData } from '@/components/ai/prompts/schemas';
 
 interface TestRequest {
-  resumeText?: string;
-  images?: Array<{
-    id: string;
-    base64: string;
-    mimeType: string;
-  }>;
-  prompt?: string;
-}
-
-function buildTestPrompt(options: TestRequest): string {
-  const { resumeText, images, prompt } = options;
-  const parts: string[] = [];
-
-  if (resumeText) {
-    parts.push('## Resume\n');
-    parts.push(resumeText);
-    parts.push('\n');
-  }
-
-  if (images && images.length > 0) {
-    parts.push('## Images\n');
-    parts.push(`${images.length} image(s) provided:\n`);
-    images.forEach((img, i) => {
-      parts.push(`- Image ${i + 1}: ${img.mimeType} (${img.id})\n`);
-    });
-    parts.push('\n');
-  }
-
-  if (prompt) {
-    parts.push('## User Preferences\n');
-    parts.push(prompt);
-    parts.push('\n');
-  }
-
-  parts.push('\nGenerate the portfolio configuration.');
-
-  return parts.join('');
+  resumeData?: ResumeData;
+  stylePreset?: string;
 }
 
 export async function POST(request: Request) {
   try {
     const body: TestRequest = await request.json();
-    const { resumeText, images, prompt } = body;
+    const { resumeData, stylePreset } = body;
 
-    if (!resumeText && !images && !prompt) {
-      return Response.json({
-        error: 'Provide at least one of: resumeText, images, or prompt',
-        example: {
-          resumeText: 'John Doe\nSoftware Engineer\n...',
-          prompt: 'Dark mode, minimalist',
+    if (!resumeData) {
+      return Response.json(
+        {
+          success: false,
+          error: 'resumeData is required. Parse the resume first using /api/parse-resume',
         },
-      }, { status: 400 });
+        { status: 400 }
+      );
     }
 
-    const testPrompt = buildTestPrompt({ resumeText, images, prompt });
-
     console.log('[Test API] Starting generation...');
-    console.log('[Test API] Prompt length:', testPrompt.length);
+    console.log('[Test API] Name:', resumeData.name);
+    console.log('[Test API] Style:', stylePreset || 'glass (default)');
+
+    const input: GenerationInput = {
+      resumeData,
+      stylePreset: stylePreset || 'Glass Modern\n\nDark theme with glassmorphism cards, gradient accents, modern bento grid layout.',
+    };
 
     const startTime = Date.now();
+    const result = await generatePortfolio(input);
+    const duration = Date.now() - startTime;
 
-    const result = await portfolioAgent.generate({
-      prompt: testPrompt,
-      onStepFinish: ({ stepNumber, usage, toolCalls }) => {
-        console.log(`[Test API] Step ${stepNumber} finished`, {
-          inputTokens: usage.inputTokens,
-          outputTokens: usage.outputTokens,
-          toolsUsed: toolCalls?.map(tc => tc.toolName),
-        });
-      },
-      onFinish: ({ totalUsage, steps }) => {
-        console.log('[Test API] Generation complete', {
-          totalTokens: totalUsage.totalTokens,
-          totalSteps: steps.length,
-          duration: Date.now() - startTime,
-        });
-      },
+    console.log('[Test API] Generation complete:', {
+      duration: `${duration}ms`,
+      success: result.success,
+      attempts: result.attempts,
     });
 
-    const output = result.output;
-
-    const validation = portfolioConfigSchema.safeParse(output);
+    if (!result.success) {
+      return Response.json(
+        {
+          success: false,
+          error: result.error,
+          duration: result.duration,
+        },
+        { status: 500 }
+      );
+    }
 
     return Response.json({
       success: true,
-      duration: Date.now() - startTime,
-      steps: result.steps.length,
-      usage: result.totalUsage,
-      output,
-      validation: validation.success 
-        ? { valid: true }
-        : { valid: false, errors: validation.error.issues },
+      duration: result.duration,
+      attempts: result.attempts,
+      output: result.html,
     });
   } catch (error) {
     console.error('[Test API] Error:', error);
-    return Response.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-    }, { status: 500 });
+    return Response.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: process.env.NODE_ENV === 'development'
+          ? error instanceof Error ? error.stack : undefined
+          : undefined,
+      },
+      { status: 500 }
+    );
   }
 }
 
 export async function GET() {
   return Response.json({
-    name: 'Portfolio Generator Test API',
-    description: 'Non-streaming endpoint for testing the portfolio agent',
+    name: 'Portfolio Generator API',
+    version: '4.0',
+    description: 'Fast single-call portfolio generation with style presets',
+    architecture: {
+      approach: 'Single LLM call for fast generation (35-70s)',
+      steps: [
+        '1. Client parses resume via /api/parse-resume (5-10s)',
+        '2. Client sends resumeData + stylePreset to /api/test',
+        '3. Server generates HTML in single call (30-60s)',
+        '4. Retry logic (max 3 attempts) if needed',
+      ],
+    },
+    stylePresets: ['glass', 'terminal', 'creative', 'minimal'],
     usage: {
       method: 'POST',
       body: {
-        resumeText: 'string (optional) - Resume text content',
-        images: 'Array<{ id, base64, mimeType }> (optional) - Images to analyze',
-        prompt: 'string (optional) - Style preferences',
-      },
-      example: {
-        resumeText: 'John Doe\nSoftware Engineer\n5 years experience...',
-        prompt: 'Dark mode, minimalist, highlight projects',
+        resumeData: 'ResumeData object (from /api/parse-resume)',
+        stylePreset: 'Style prompt string (optional, defaults to Glass Modern)',
       },
     },
     endpoints: {
-      'POST /api/test': 'Run generation and get result',
-      'POST /api/generate': 'Streaming endpoint for client use',
+      'POST /api/parse-resume': 'Parse resume text to structured data',
+      'POST /api/test': 'Generate portfolio HTML',
     },
   });
 }
