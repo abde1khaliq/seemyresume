@@ -32,7 +32,7 @@ export function loadSkillSync(skillName: string): string {
   return loadSkill(skillName);
 }
 
-function stripFrontmatter(content: string): string {
+export function stripFrontmatter(content: string): string {
   const frontmatterRegex = /^---\n[\s\S]*?\n---\n?/;
   return content.replace(frontmatterRegex, '').trim();
 }
@@ -59,4 +59,5 @@ export const skills = {
   resumeParsing: () => loadSkill('resume-parsing'),
   imageAnalysis: () => loadSkill('image-analysis'),
   portfolioAssembly: () => loadSkill('portfolio-assembly'),
+  documentProcessing: () => loadSkill('document-processing'),
 } as const;
