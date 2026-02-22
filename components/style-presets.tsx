@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 export interface StylePreset {
   id: string;
@@ -17,13 +17,13 @@ export interface StylePreset {
 
 export const STYLE_PRESETS: StylePreset[] = [
   {
-    id: 'glass',
-    label: 'Glass Modern',
-    description: 'Dark theme with glassmorphism cards',
+    id: "glass",
+    label: "Glass Modern",
+    description: "Dark theme with glassmorphism cards",
     preview: {
-      bg: 'bg-slate-950',
-      accent: 'bg-indigo-500',
-      cardBg: 'bg-white/5 backdrop-blur',
+      bg: "bg-slate-950",
+      accent: "bg-indigo-500",
+      cardBg: "bg-white/5 backdrop-blur",
     },
     prompt: `Style: Glass Modern
 Theme: Dark (#0d0d12 background)
@@ -38,13 +38,13 @@ Animations: Moderate - smooth fade-ins, elegant hover states`,
     default: true,
   },
   {
-    id: 'terminal',
-    label: 'Developer Terminal',
-    description: 'Command-line aesthetic for developers',
+    id: "terminal",
+    label: "Developer Terminal",
+    description: "Command-line aesthetic for developers",
     preview: {
-      bg: 'bg-zinc-950',
-      accent: 'bg-emerald-400',
-      cardBg: 'bg-zinc-900 border border-emerald-400/30',
+      bg: "bg-zinc-950",
+      accent: "bg-emerald-400",
+      cardBg: "bg-zinc-900 border border-emerald-400/30",
     },
     prompt: `Style: Terminal
 Theme: Dark terminal (#0a0a0f background)
@@ -58,13 +58,13 @@ Hero: Terminal window with typing animation effect, "whoami" style intro showing
 Animations: Cursor blink, command-line reveal animations, typing effect`,
   },
   {
-    id: 'creative',
-    label: 'Creative Bold',
-    description: 'Asymmetric layout with bold typography',
+    id: "creative",
+    label: "Creative Bold",
+    description: "Asymmetric layout with bold typography",
     preview: {
-      bg: 'bg-gradient-to-br from-violet-950 to-fuchsia-950',
-      accent: 'bg-fuchsia-400',
-      cardBg: 'bg-white/10',
+      bg: "bg-gradient-to-br from-violet-950 to-fuchsia-950",
+      accent: "bg-fuchsia-400",
+      cardBg: "bg-white/10",
     },
     prompt: `Style: Creative Bold
 Theme: Dark with vibrant accents
@@ -78,13 +78,13 @@ Hero: Large typography (6-8rem name), dynamic asymmetric composition, visually s
 Animations: Elaborate - staggered reveals, bold transitions, dramatic effects`,
   },
   {
-    id: 'minimal',
-    label: 'Minimal Light',
-    description: 'Clean, professional with generous whitespace',
+    id: "minimal",
+    label: "Minimal Light",
+    description: "Clean, professional with generous whitespace",
     preview: {
-      bg: 'bg-white',
-      accent: 'bg-slate-900',
-      cardBg: 'bg-slate-50 border border-slate-200',
+      bg: "bg-white",
+      accent: "bg-slate-900",
+      cardBg: "bg-slate-50 border border-slate-200",
     },
     prompt: `Style: Minimal Light
 Theme: Light (#ffffff background)
@@ -104,7 +104,10 @@ interface StylePresetSelectorProps {
   onSelect: (preset: StylePreset) => void;
 }
 
-export function StylePresetSelector({ selectedId, onSelect }: StylePresetSelectorProps) {
+export function StylePresetSelector({
+  selectedId,
+  onSelect,
+}: StylePresetSelectorProps) {
   return (
     <div className="space-y-3">
       <label className="text-sm font-medium text-slate-200">Style Preset</label>
@@ -114,30 +117,30 @@ export function StylePresetSelector({ selectedId, onSelect }: StylePresetSelecto
             key={preset.id}
             onClick={() => onSelect(preset)}
             className={cn(
-              'group relative overflow-hidden rounded-lg border-2 p-3 text-left transition-all',
-              'hover:border-slate-500 hover:shadow-lg',
+              "group relative overflow-hidden rounded-lg border-2 p-3 text-left transition-all",
+              "hover:border-slate-500 hover:shadow-lg",
               selectedId === preset.id
-                ? 'border-indigo-500 ring-2 ring-indigo-500/20'
-                : 'border-slate-700'
+                ? "border-indigo-500 ring-2 ring-indigo-500/20"
+                : "border-slate-700",
             )}
           >
             <div className="flex items-start gap-3">
               <div
                 className={cn(
-                  'h-10 w-10 flex-shrink-0 rounded-md',
-                  preset.preview.bg
+                  "h-10 w-10 flex-shrink-0 rounded-md",
+                  preset.preview.bg,
                 )}
               >
                 <div
                   className={cn(
-                    'h-full w-full rounded-md p-1.5',
-                    preset.preview.cardBg
+                    "h-full w-full rounded-md p-1.5",
+                    preset.preview.cardBg,
                   )}
                 >
                   <div
                     className={cn(
-                      'h-1.5 w-4 rounded-sm',
-                      preset.preview.accent
+                      "h-1.5 w-4 rounded-sm",
+                      preset.preview.accent,
                     )}
                   />
                 </div>
