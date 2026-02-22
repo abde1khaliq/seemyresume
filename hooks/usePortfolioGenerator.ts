@@ -12,7 +12,7 @@ interface ImageInput {
 }
 
 interface GeneratePortfolioOptions {
-  resumeText: string;
+  resumeText?: string;
   images?: ImageInput[];
   prompt?: string;
 }
@@ -65,15 +65,17 @@ export function usePortfolioGenerator() {
 }
 
 function buildMessageContent(
-  resumeText: string,
+  resumeText?: string,
   images?: ImageInput[],
   prompt?: string
 ): string {
   const parts: string[] = [];
 
-  parts.push('## Resume\n');
-  parts.push(resumeText);
-  parts.push('\n');
+  if (resumeText) {
+    parts.push('## Resume\n');
+    parts.push(resumeText);
+    parts.push('\n');
+  }
 
   if (images && images.length > 0) {
     parts.push('## Images\n');
