@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Antic_Slab } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const as = Antic_Slab({
+  variable: "--font-as",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -20,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} ${as.variable} antialiased`}>
         <Provider>{children}</Provider>
       </body>
     </html>
