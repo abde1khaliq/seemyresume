@@ -5,19 +5,18 @@ const config = defineConfig({
     "html, body": {
       margin: 0,
       padding: 0,
+      backgroundColor: "primary",
     },
   },
   theme: {
     tokens: {
       colors: {
-        // Will be set right after we pick a theme for the project
-        // Example:
-        // primary: { value: "#f5f5f5" },
-        // accent: { value: "#5271ff" },
-        // You can read more on; https://chakra-ui.com/docs/theming/overview
+        primary: { value: "#f5f5f5" },
+        accent: { value: "#2b7fff" },
       },
       fonts: {
         inter: { value: "inter" },
+        quatt: { value: "quattrocento" },
       },
     },
   },
