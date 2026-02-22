@@ -1,5 +1,33 @@
 import { z } from 'zod';
 
+export const documentMimeTypeSchema = z.enum([
+  'application/pdf',
+  'application/x-pdf',
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/webp',
+  'image/avif',
+]);
+
+export const documentInputSchema = z.object({
+  url: z.string().url().optional(),
+  base64: z.string().optional(),
+  mimeType: documentMimeTypeSchema,
+  pages: z.array(z.number()).optional(),
+});
+
+export type DocumentInput = z.infer<typeof documentInputSchema>;
+
+export const imageInputSchema = z.object({
+  id: z.string(),
+  url: z.string().url().optional(),
+  base64: z.string().optional(),
+  mimeType: z.enum(['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/avif']).optional(),
+});
+
+export type ImageInput = z.infer<typeof imageInputSchema>;
+
 export const resumeDataSchema = z.object({
   name: z.string(),
   title: z.string().optional(),

@@ -2,7 +2,7 @@ import { ToolLoopAgent, Output, stepCountIs, InferAgentUIMessage } from 'ai';
 import { hackclub, model } from './config';
 import { portfolioConfigSchema } from './prompts/schemas';
 import { skills, loadPrompt } from './utils/skill-loader';
-import { parseResumeText, analyzeImage, generateSection, assemblePortfolio } from './tools';
+import { processDocumentTool, analyzeImageTool, generateSection, assemblePortfolio } from './tools';
 
 const mainPrompt = loadPrompt();
 
@@ -17,6 +17,12 @@ ${skills.frontendDesign()}
 
 ---
 
+## Document Processing Skills
+
+${skills.documentProcessing()}
+
+---
+
 ## Assembly Skills
 
 ${skills.portfolioAssembly()}
@@ -25,20 +31,33 @@ ${skills.portfolioAssembly()}
 
 ## Workflow
 
-1. **Parse Resume**: Use the \`parseResumeText\` tool to extract structured data from the resume
-2. **Analyze Images**: Use the \`analyzeImage\` tool for each provided image
-3. **Generate Sections**: Use \`generateSection\` for each portfolio section (hero, experience, projects, skills, about, contact)
-4. **Assemble Portfolio**: Use \`assemblePortfolio\` to combine everything into the final configuration
+1. **Process Documents**: 
+   - If PDF/Image provided → use \`processDocument\` tool
+   - Smart detection: native for digital PDFs, OCR for scanned
+   - Returns extracted text content
 
-Always follow this workflow. Start by parsing the resume, then analyze images, then generate sections in order, and finally assemble the complete portfolio.
+2. **Analyze Images**: 
+   - Use \`analyzeImage\` for each image
+   - Uses gemini-3-flash for vision analysis
+   - Returns: type, description, suggestedPlacement, altText
+
+3. **Generate Sections**: 
+   - Use \`generateSection\` for each section (hero, experience, projects, skills, about, contact)
+   - Uses minimax-m2.5 for code generation
+
+4. **Assemble Portfolio**: 
+   - Use \`assemblePortfolio\` to combine everything
+   - Validates and orders sections
+
+Always follow this workflow. Start by processing documents, then analyze images, then generate sections in order, and finally assemble the complete portfolio.
 `;
 
 export const portfolioAgent = new ToolLoopAgent({
   model: hackclub(model),
   instructions,
   tools: {
-    parseResumeText,
-    analyzeImage,
+    processDocument: processDocumentTool,
+    analyzeImage: analyzeImageTool,
     generateSection,
     assemblePortfolio,
   },

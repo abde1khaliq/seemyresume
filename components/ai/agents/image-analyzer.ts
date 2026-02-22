@@ -1,14 +1,14 @@
 import { ToolLoopAgent, Output, stepCountIs } from 'ai';
-import { hackclub, model } from '../config';
+import { hackclub, MODELS } from '../config';
 import { imageAnalysisSchema } from '../prompts/schemas';
 import { skills } from '../utils/skill-loader';
-import { analyzeImage } from '../tools';
+import { analyzeImageTool } from '../tools';
 
 export const imageAnalyzerAgent = new ToolLoopAgent({
-  model: hackclub(model),
+  model: hackclub(MODELS.vision),
   instructions: skills.imageAnalysis(),
   tools: {
-    analyzeImage,
+    analyzeImage: analyzeImageTool,
   },
   output: Output.object({
     schema: imageAnalysisSchema,
