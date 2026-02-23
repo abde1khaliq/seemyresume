@@ -11,8 +11,9 @@ const config = defineConfig({
   theme: {
     tokens: {
       colors: {
-        primary: { value: "#f5f5f5" },
-        accent: { value: "#2b7fff" },
+        primary: { value: "#f2f2f2" },
+        accent: { value: "#0059ff" },
+        accentH: { value: "#196aff" },
       },
       fonts: {
         inter: { value: "inter" },

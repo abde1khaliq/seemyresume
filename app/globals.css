@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+::-moz-selection {
+  background: #3d81ff;
+  color: white;
+}
+
+::selection {
+  background: #3d81ff;
+  color: white;
+}
